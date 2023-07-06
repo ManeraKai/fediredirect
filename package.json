@@ -1,0 +1,34 @@
+{
+	"name": "fediredirect",
+	"description": "Redirects from a fediverse instance to your own instance",
+	"engines": {
+		"node": ">=16.13.1",
+		"npm": ">=8.1.2"
+	},
+	"scripts": {
+		"start": "web-ext run",
+		"build": "web-ext build",
+		"test": "web-ext lint"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/manerakai/fediredirect.git"
+	},
+	"author": "ManeraKai",
+	"license": "GPL-3.0-only",
+	"bugs": {
+		"url": "https://github.com/manerakai/fediredirect/issues"
+	},
+	"devDependencies": {
+		"web-ext": "^7.2.0"
+	},
+	"webExt": {
+		"sourceDir": "./src/",
+		"run": {
+			"browserConsole": true
+		},
+		"build": {
+			"overwriteDest": true
+		}
+	}
+}

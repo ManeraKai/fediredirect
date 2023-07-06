@@ -1,0 +1,10 @@
+{
+    "extensionName": {
+        "message": "FediRedirect",
+        "description": "name of the extension"
+    },
+    "extensionDescription": {
+        "message": "Redirects from a fediverse instance to your own instance",
+        "description": "description of the extension"
+    }
+}

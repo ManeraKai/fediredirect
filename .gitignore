@@ -1,0 +1,8 @@
+web-ext-artifacts/
+.DS_Store
+nod
+node_modules
+package-lock.json
+.vscode
+src/pages/options/index.html
+src/pages/popup/popup.html

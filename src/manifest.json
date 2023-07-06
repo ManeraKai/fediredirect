@@ -19,7 +19,7 @@
 		"storage",
 		"tabs",
 		"activeTab",
-		"<all_urls>"
+		"https://*/*"
 	],
 	"browser_action": {
 		"default_title": "__MSG_extensionName__",

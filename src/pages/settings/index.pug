@@ -1,0 +1,27 @@
+doctype html
+html(id="elementToShowWithJavaScript" lang="en")
+    include /src/pages/widgets/head
+    body(class="option" dir="auto")
+        section(class="links" id="links")
+            div(class="title")
+                a(href="#general") 
+                    include /src/assets/general-icon.svg
+                    span(data-localise="__MSG_general__") General
+
+            div(class="title")
+                a(href="#lemmy")
+                    img(class='dark' src="/assets/lemmy.svg")
+                    img(class='light' src="/assets/lemmy.svg")
+                    span Lemmy
+            
+
+            //- div(class="title")
+                a(target="_blank" href="https://libredirect.github.io")
+                    img(class='dark' src="/assets/about-icon.svg")
+                    img(class='light' src="/assets/about-icon-light.svg")
+
+                    span(data-localise="__MSG_about__") About
+        div#pages
+            include /src/pages/settings/widgets/general
+            include /src/pages/settings/widgets/lemmy/lemmy
+    script(type="module" src="./index.js")

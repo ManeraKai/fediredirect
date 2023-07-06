@@ -4,5 +4,4 @@ nod
 node_modules
 package-lock.json
 .vscode
-src/pages/options/index.html
-src/pages/popup/popup.html
+src/pages/settings/index.html

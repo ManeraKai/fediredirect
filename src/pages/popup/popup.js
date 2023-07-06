@@ -1,7 +1,10 @@
-const myInstances = {
-    'lemmy': 'https://programming.dev'
-}
-const auth = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4OTQsImlzcyI6InByb2dyYW1taW5nLmRldiIsImlhdCI6MTY4ODYyMzUwNX0.1yJmq-4SMCKSgMU4X82qDgmg27SbMg0pPB9HR1L_ex4'
+import utils from '/pages/lib/utils.js'
+
+let options
+(async () => {
+    options = await utils.getOptions()
+    console.log(options)
+})()
 
 document.getElementById("more-options").addEventListener("click", () => browser.runtime.openOptionsPage())
 
@@ -38,16 +41,16 @@ document.getElementById("redirect_to_lemmy").addEventListener("click", () => {
             const communityRegex = isLemmyCommunity(url)
             if (communityRegex) {
                 let newUrl
-                if (communityRegex.length == 1) newUrl = `${myInstances.lemmy}/c/${communityRegex[0]}@${url.hostname}`
-                else if (communityRegex.length == 2) newUrl = `${myInstances.lemmy}/c/${communityRegex[0]}@${communityRegex[1]}`
+                if (communityRegex.length == 1) newUrl = `${utils.protocolHost(options.lemmy.instance)}/c/${communityRegex[0]}@${url.hostname}`
+                else if (communityRegex.length == 2) newUrl = `${utils.protocolHost(options.lemmy.instance)}/c/${communityRegex[0]}@${communityRegex[1]}`
                 browser.tabs.update({ url: newUrl })
                 return
             }
             const userRegex = isLemmyUser(url)
             if (userRegex) {
                 let newUrl
-                if (userRegex.length == 1) newUrl = `${myInstances.lemmy}/u/${userRegex[0]}@${url.hostname}`
-                else if (userRegex.length == 2) newUrl = `${myInstances.lemmy}/u/${userRegex[0]}@${userRegex[1]}`
+                if (userRegex.length == 1) newUrl = `${utils.protocolHost(options.lemmy.instance)}/u/${userRegex[0]}@${url.hostname}`
+                else if (userRegex.length == 2) newUrl = `${utils.protocolHost(options.lemmy.instance)}/u/${userRegex[0]}@${userRegex[1]}`
                 browser.tabs.update({ url: newUrl })
                 return
             }
@@ -56,7 +59,7 @@ document.getElementById("redirect_to_lemmy").addEventListener("click", () => {
 })
 
 function isMyInstance(url, software) {
-    const instance = new URL(myInstances[software])
+    const instance = new URL(options[software].instance)
     return url.hostname == instance.hostname
 }
 
@@ -67,10 +70,8 @@ function isLemmy(url) {
         req.onreadystatechange = () => {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    console.log('isLemmy', true)
                     resolve(true)
                 } else {
-                    console.log('isLemmy', false)
                     resolve(false)
                 }
             }
@@ -118,22 +119,22 @@ function isLemmyUser(url) {
 function lemmyResolveObject(q, type) {
     return new Promise(resolve => {
         const req = new XMLHttpRequest();
-        req.open("GET", `${myInstances.lemmy}/api/v3/resolve_object?q=${encodeURIComponent(q)}&auth=${encodeURIComponent(auth)}`, false)
+        req.open("GET", `${utils.protocolHost(options.lemmy.instance)}/api/v3/resolve_object?q=${encodeURIComponent(q)}&auth=${encodeURIComponent(options.lemmy.auth)}`, false)
         req.onload = () => {
+            console.log(req)
             switch (type) {
                 case 'post': {
                     const id = JSON.parse(req.responseText)['post']['post']['id']
-                    resolve(`${myInstances.lemmy}/post/${id}`)
+                    resolve(`${utils.protocolHost(options.lemmy.instance)}/post/${id}`)
                     return
                 }
                 case 'comment': {
                     const id = JSON.parse(req.responseText)['comment']['comment']['id']
-                    resolve(`${myInstances.lemmy}/comment/${id}`)
+                    resolve(`${utils.protocolHost(options.lemmy.instance)}/comment/${id}`)
                     return
                 }
             }
         }
         req.send();
     })
-
 }

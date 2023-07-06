@@ -75,6 +75,7 @@ body.rtl svg {
 	margin-left: 10px;
 }
 
+input[type="password"],
 input[type="url"],
 input[type="text"],
 select {
@@ -120,14 +121,14 @@ section.option-block h2 {
 body.option {
 	display: flex;
 	padding: 40px;
-	width: 1150px;
+	width: 1000px;
 }
 
 section.links {
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: column;
-	width: 300px;
+	width: 150px;
 	max-height: 850px;
 }
 
@@ -188,9 +189,6 @@ div.some-block {
 	margin-bottom: 10px;
 }
 
-div.option-block {
-	margin: 30px 0;
-}
 
 h4 {
 	margin: 10px 0;
@@ -243,6 +241,18 @@ div.some-block input[type="checkbox"]::before {
 	background-color: white;
 	border-radius: 50%;
 	transition: 0.3s;
+}
+
+div.option-block {
+	margin: 30px 0;
+}
+
+div.option-input {
+	display: block;
+}
+
+div.option-input h4 {
+	margin-bottom: 10px;
 }
 
 body.rtl div.some-block input[type="checkbox"]::before {

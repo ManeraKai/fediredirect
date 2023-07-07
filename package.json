@@ -9,7 +9,8 @@
 		"start": "web-ext run",
 		"build": "web-ext build",
 		"test": "web-ext lint",
-		"html": "pug --basedir ./ src/pages/settings/index.pug --out src/pages/settings/"
+		"html": "pug --basedir ./ src/pages/settings/index.pug --out src/pages/settings/",
+		"html-watch": "pug -w --basedir ./ src/pages/settings/index.pug --out src/pages/settings/"
 	},
 	"repository": {
 		"type": "git",

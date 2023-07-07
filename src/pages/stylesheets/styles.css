@@ -17,13 +17,6 @@ body {
 	font-style: normal;
 }
 
-@font-face {
-	font-family: "Vazirmatn";
-	src: url("Vazirmatn-VariableFont_wght.ttf");
-	font-weight: normal;
-	font-style: normal;
-}
-
 body {
 	margin: auto;
 	padding: 0;
@@ -31,17 +24,6 @@ body {
 	font-size: 16px;
 	background-color: var(--bg-main);
 	color: var(--text);
-}
-
-body.rtl {
-	font-family: "Vazirmatn";
-	/* line-height: 1; */
-}
-
-div.some-block input[type="checkbox"] {
-	appearance: none;
-	-moz-appearance: none;
-	-webkit-appearance: none;
 }
 
 .title {
@@ -69,12 +51,6 @@ svg {
 	color: var(--text);
 }
 
-body.rtl img,
-body.rtl svg {
-	margin-right: 0px;
-	margin-left: 10px;
-}
-
 input[type="password"],
 input[type="url"],
 input[type="text"],
@@ -91,11 +67,7 @@ select {
 	margin: 0;
 	max-width: 500px;
 	border-radius: 3px;
-}
-
-input[type="url"],
-input[type="text"] {
-	width: 400px;
+	width: 350px;
 	cursor: text;
 }
 
@@ -104,24 +76,22 @@ input:invalid {
 	border-color: var(--danger);
 }
 
-.button svg {
-	height: 18px;
-	width: 18px;
-}
-
 section.option-block {
 	width: 750px;
 	margin: 0 50px;
 }
 
-section.option-block h2 {
-	margin: 0;
-}
 
 body.option {
 	display: flex;
 	padding: 40px;
 	width: 1000px;
+}
+
+a {
+	text-decoration: none;
+	color: var(--active);
+	transition: 0.1s;
 }
 
 section.links {
@@ -135,16 +105,6 @@ section.links {
 section.links div {
 	margin: 10px;
 	width: max-content;
-}
-
-a {
-	text-decoration: none;
-	color: var(--text);
-	transition: 0.1s;
-}
-
-a:hover {
-	color: var(--active);
 }
 
 section.links a {
@@ -170,53 +130,39 @@ section.links .selected a {
 	opacity: 0.7;
 }
 
-
-/* \25BE */
-
 hr {
 	height: 2px;
-	margin: 0 15px;
 	background-color: rgb(77, 77, 77);
 	border: none;
 }
-
-div.some-block {
-	padding: 0 15px;
-	justify-content: space-between;
-	display: flex;
-	align-items: center;
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-
 
 h4 {
 	margin: 10px 0;
 	font-size: 18px;
 }
 
-div.some-block h4 {
-	margin: 0;
+div.block {
+	justify-content: space-between;
+	display: flex;
+	align-items: center;
+	margin: 30px 0;
 }
 
-div.option-block h4 {
+div.block input[type="checkbox"] {
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+}
+
+div.block h4 {
+	margin: 0;
 	margin-right: 5px;
 	width: 80%;
 	min-width: 150px;
 	font-size: 18px;
 }
 
-div.option-block h1 {
-	margin: 0;
-	font-size: 28px;
-	color: var(--text);
-}
-
-div.option-block div {
-	text-align: center;
-}
-
-div.some-block input[type="checkbox"] {
+div.block input[type="checkbox"] {
 	width: 46px;
 	height: 24px;
 	background-color: var(--light-grey);
@@ -225,11 +171,11 @@ div.some-block input[type="checkbox"] {
 	cursor: pointer;
 }
 
-div.some-block input[type="checkbox"]:checked {
+div.block input[type="checkbox"]:checked {
 	background-color: var(--active);
 }
 
-div.some-block input[type="checkbox"]::before {
+div.block input[type="checkbox"]::before {
 	content: "";
 	display: inline-block;
 	width: 18px;
@@ -243,30 +189,12 @@ div.some-block input[type="checkbox"]::before {
 	transition: 0.3s;
 }
 
-div.option-block {
-	margin: 30px 0;
-}
-
-div.option-input {
-	display: block;
-}
-
 div.option-input h4 {
 	margin-bottom: 10px;
 }
 
-body.rtl div.some-block input[type="checkbox"]::before {
-	left: auto;
-	right: 4px;
-}
-
-div.some-block input[type="checkbox"]:checked::before {
+div.block input[type="checkbox"]:checked::before {
 	left: 24px;
-}
-
-body.rtl div.some-block input[type="checkbox"]:checked::before {
-	left: auto;
-	right: 24px;
 }
 
 div.buttons {
@@ -275,15 +203,6 @@ div.buttons {
 	margin-bottom: 15px;
 	margin-top: 15px;
 	flex-wrap: wrap;
-	align-items: center;
-}
-
-div.buttons-popup {
-	border-radius: 5px;
-	display: flex;
-	flex-wrap: wrap;
-	margin: 0 10px 7px 10px;
-	justify-content: start;
 	align-items: center;
 }
 
@@ -300,9 +219,10 @@ div.buttons-popup {
 	color: var(--active);
 }
 
-.button svg {
-	width: auto;
-	height: auto;
+.button svg,
+.button img {
+	width: 26px;
+	height: 26px;
 	padding: 0;
 	margin-right: 5px;
 }
@@ -314,7 +234,6 @@ div.buttons-popup {
 div.buttons-inline {
 	display: flex;
 	justify-content: start;
-	/* padding: 0 15px; */
 }
 
 .button-inline {
@@ -350,40 +269,6 @@ button svg {
 	color: var(--text);
 }
 
-div.checklist div {
-	justify-content: space-between;
-	margin: 5px 15px;
-	padding: 10px 0;
-	word-wrap: break-word;
-	display: flex;
-}
-
-div.checklist a {
-	text-decoration: none;
-	color: var(--text);
-}
-
-div.checklist a:hover {
-	text-decoration: underline;
-}
-
-div.checklist-popup div {
-	justify-content: space-between;
-	margin: 5px 15px;
-	padding: 5px 0;
-	max-width: 200px;
-	display: flex;
-	align-items: center;
-}
-
-div.checklist-popup div div {
-	margin: 0;
-}
-
-div.custom-checklist x a {
-	color: var(--active);
-}
-
 button.add {
 	background-color: transparent;
 	border: none;
@@ -403,55 +288,6 @@ div.disabled {
 	height: 100%;
 }
 
-.light-theme.popup,
-.light-theme .popup {
-	background-color: var(--bg-secondary);
-}
-
-body.light-theme {
-	--text: black;
-	--bg-main: white;
-	--bg-secondary: #e4e4e4;
-	--active: #fb9817;
-}
-
-body.light-theme select {
-	border: 1px solid black;
-}
-
-body.light-theme textarea {
-	color: black;
-	border: 1px solid #767676;
-}
-
-body.light-theme textarea:focus {
-	outline: none;
-}
-
-body.light-theme a {
-	color: black;
-}
-
-body.light-theme a:hover {
-	color: var(--active)
-}
-
-section.general {
-	display: flex;
-	flex-wrap: wrap;
-	margin-right: 0;
-	width: 100%;
-	justify-content: space-between;
-}
-
-section.general div {
-	margin-right: 20px;
-}
-
-#customize-popup {
-	width: 250px;
-}
-
 button {
 	background-color: transparent;
 	color: var(--text);
@@ -467,15 +303,6 @@ body div section {
 	display: none;
 }
 
-div.about>div {
-	justify-content: start;
-	width: 520px;
-}
-
-div.about h4 {
-	width: auto;
-}
-
 select:disabled {
 	opacity: 0.6;
 	cursor: not-allowed;
@@ -484,9 +311,4 @@ select:disabled {
 input:disabled {
 	opacity: 0.6;
 	cursor: not-allowed;
-}
-
-div.about a {
-	width: 500px;
-	display: inline-block;
 }

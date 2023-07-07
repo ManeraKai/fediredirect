@@ -1,36 +1,36 @@
 section(class="option-block" id="lemmy_page")
-    div(class="some-block option-block")
-        h1(data-localise="__MSG_general__") Lemmy
+    h1(data-localise="__MSG_general__") Lemmy
     hr
 
     form(id="lemmy_form")
-        div(class="some-block option-block option-input")
-            h4 Your instance
-            input(class="custom-instance" type="url" placeholder="https://lemmy.ml" class="instance")
+        div(class="block option-input")
+            div 
+                h4 Your instance
+                input(class="custom-instance" type="url" placeholder="https://lemmy.ml" class="instance")
 
-        div(class="some-block option-block option-input")
-            h4 Username or Email
-            input(class="custom-instance" type="text" class="username")
+        div(class="block option-input")
+            div 
+                h4 Username or Email
+                input(class="custom-instance" type="text" class="username")
+            div 
+                h4 Password
+                input(class="custom-instance" type="password" class="password")
+        
+        div(class="block option-input")
+            div 
+                h4 jwt
+                input(class="custom-instance" type="password" class="jwt")
 
-        div(class="some-block option-block option-input" )
-            h4 Password
-            input(class="custom-instance" type="password" class="password")
-
-        div(class="some-block option-block")
-            |OR
-
-        div(class="some-block option-block option-input")
-            h4 jwt
-            input(class="custom-instance" type="password" class="jwt")
-
-        div(class="ping some-block")
+        div(class="block")
             button(type="submit" class="button button-inline") Save
 
-    div(class="some-block option-block")
-        p
-            |Username and Password OR jwt are required for <a href="https://join-lemmy.org/api/classes/LemmyHttp.html#resolveObject">resolving</a> /post and /comment. If Username and Password didn't work, go to your instance's cookies and take your <strong>jwt</strong>.
+    hr
+
+    div(class="block")
+        div 
+            |(Username and Password) or (jwt) are required for <a href="https://join-lemmy.org/api/classes/LemmyHttp.html#resolveObject">resolving</a> /post and /comment. If Username and Password didn't work, go to your instance's cookies and copy your jwt.
             br
             br
-            |Username and Password will not work if your instance server has it's policy accepting ONLY http origins. FediRedirect sends a moz-extension:// request so.
+            |Username and Password will not work if your instance server has it's policy accepting ONLY http origins. FediRedirect sends a moz-extension:// request so contact your instance maintainer.
 
     script(type="module" src="widgets/lemmy/lemmy.js")

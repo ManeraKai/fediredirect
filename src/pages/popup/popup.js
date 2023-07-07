@@ -3,7 +3,6 @@ import utils from '/pages/lib/utils.js'
 let options
 (async () => {
     options = await utils.getOptions()
-    console.log(options)
 })()
 
 document.getElementById("more-options").addEventListener("click", () => browser.runtime.openOptionsPage())
@@ -121,7 +120,6 @@ function lemmyResolveObject(q, type) {
         const req = new XMLHttpRequest();
         req.open("GET", `${utils.protocolHost(options.lemmy.instance)}/api/v3/resolve_object?q=${encodeURIComponent(q)}&auth=${encodeURIComponent(options.lemmy.auth)}`, false)
         req.onload = () => {
-            console.log(req)
             switch (type) {
                 case 'post': {
                     const id = JSON.parse(req.responseText)['post']['post']['id']

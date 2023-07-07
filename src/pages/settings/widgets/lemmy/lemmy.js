@@ -1,8 +1,19 @@
+import utils from '/pages/lib/utils.js'
+
 const form = document.getElementById('lemmy_form')
 const instance = form.getElementsByClassName('instance')[0]
 const username = form.getElementsByClassName('username')[0]
 const password = form.getElementsByClassName('password')[0]
 const jwt = form.getElementsByClassName('jwt')[0]
+
+let options
+(async () => {
+    options = await utils.getOptions()
+    if (options.lemmy) {
+        instance.value = options.lemmy.instance
+        jwt.value = options.lemmy.auth
+    }
+})()
 
 form.addEventListener("submit", async e => {
     e.preventDefault()

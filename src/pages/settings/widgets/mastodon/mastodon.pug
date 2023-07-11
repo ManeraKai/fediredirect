@@ -1,0 +1,16 @@
+section(class="option-block" id="mastodon_page")
+    h1(data-localise="__MSG_general__") Mastodon
+    hr
+
+    form(id="mastodon_form")
+        div(class="block option-input")
+            div 
+                h4 Your instance
+                input(class="custom-instance" type="url" placeholder="https://mastodon.ml" class="instance")
+
+        div(class="block")
+            button(type="submit" class="button button-inline") Save
+
+    hr
+
+    script(type="module" src="widgets/mastodon/mastodon.js")

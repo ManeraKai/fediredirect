@@ -22,6 +22,11 @@ function getOptions() {
 	)
 }
 
+function isMyInstance(url, software) {
+    const instance = new URL(options[software].instance)
+    return url.hostname == instance.hostname
+}
+
 function getBlacklist(options) {
 	return new Promise(resolve => {
 		let url
@@ -95,4 +100,5 @@ export default {
 	getBlacklist,
 	camelCase,
 	getOptions,
+	isMyInstance
 }

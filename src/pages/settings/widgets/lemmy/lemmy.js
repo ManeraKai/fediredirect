@@ -26,7 +26,7 @@ form.addEventListener("submit", async e => {
     if (jwt.value == "") jwt.value = await getJwt(url, username.value, password.value)
     if (jwt.value != "") {
         browser.storage.local.set(
-            { lemmy: { instance: instance.value, auth: jwt.value } },
+            { lemmy: { instance: `${url.protocol}//${url.hostname}`, auth: jwt.value } },
             () => location.reload()
         )
     }

@@ -6,10 +6,18 @@ section(class="option-block" id="mastodon_page")
         div(class="block option-input")
             div 
                 h4 Your instance
-                input(class="custom-instance" type="url" placeholder="https://mastodon.ml" class="instance")
+                input(class="custom-instance instance" type="url" placeholder="https://mastodon.ml")
+
+        div(class="block option-input")
+            div 
+                h4 Code
+                input(class="code" type="password")
 
         div(class="block")
             button(type="submit" class="button button-inline") Save
+    
+    div(class="block")
+            button(class="button button-inline" id="mastodon_sign_in") Sign in
 
     hr
 

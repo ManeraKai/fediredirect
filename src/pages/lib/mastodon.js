@@ -36,7 +36,7 @@ function mastodon_to_mastodon(url, options) {
         if (localPostRegex || federatedPostRegex) {
             const req = new XMLHttpRequest();
             req.open("GET", `${options.mastodon.instance}/api/v2/search?q=${encodeURIComponent(url.href)}&resolve=true&limit=1`, false);
-            req.setRequestHeader('Authorization', 'Bearer <token>')
+            req.setRequestHeader('Authorization', `Bearer ${options.mastodon.access_token}`)
             req.onload = async () => {
                 const post_id = JSON.parse(req.responseText)['statuses'][0]['id']
                 if (localPostRegex) {

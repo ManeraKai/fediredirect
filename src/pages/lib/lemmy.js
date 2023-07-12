@@ -47,8 +47,13 @@ function resolveObject(q, type, options) {
 }
 
 function can_lemmy_to_lemmy(url, options) {
-    if (!options.lemmy) return 'credentials'
-    return true
+    for (const regexItem of [regex.post, regex.comment, regex.communityFederated, regex.communityLocal, regex.userFederated, regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.lemmy) return 'credentials'
+            return true
+        }
+    }
+    return false
 }
 
 function lemmy_to_lemmy(url, options) {
@@ -105,9 +110,12 @@ function lemmy_to_lemmy(url, options) {
 }
 
 function can_lemmy_to_mastodon(url, options) {
-    if (!options.mastodon) return 'credentials'
+
     for (const regexItem of [regex.userFederated, regex.userLocal, regex.communityFederated, regex.communityLocal]) {
-        if (url.pathname.match(regexItem)) return true
+        if (url.pathname.match(regexItem)) {
+            if (!options.mastodon) return 'credentials'
+            return true
+        }
     }
     return false
 }
@@ -140,10 +148,10 @@ function lemmy_to_mastodon(url, options) {
 
 export default {
     isLemmy,
-    
+
     can_lemmy_to_lemmy,
     lemmy_to_lemmy,
-    
+
     can_lemmy_to_mastodon,
     lemmy_to_mastodon,
     regex

@@ -23,9 +23,11 @@ function isMastodon(url) {
 }
 
 function can_mastodon_to_lemmy(url, options) {
-    if (!options.lemmy) return 'credentials'
     for (const regexItem of [regex.userFederated, regex.userLocal]) {
-        if (url.pathname.match(regexItem)) return true
+        if (url.pathname.match(regexItem)) {
+            if (!options.lemmy) return 'credentials'
+            return true
+        }
     }
     return false
 }
@@ -47,7 +49,12 @@ function mastodon_to_lemmy(url, options) {
 }
 
 function can_mastodon_to_mastodon(url, options) {
-    if (!options.lemmy) return 'credentials'
+    for (const regexItem of [regex.postLocal, regex.postFederated, regex.userFederated, regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.lemmy) return 'credentials'
+            return true
+        }
+    }
     return true
 }
 

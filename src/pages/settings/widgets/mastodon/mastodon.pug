@@ -1,5 +1,5 @@
 section(class="option-block" id="mastodon_page")
-    h1(data-localise="__MSG_general__") Mastodon
+    h1 Mastodon
     hr
 
     form(id="mastodon_form")
@@ -17,5 +17,9 @@ section(class="option-block" id="mastodon_page")
             button(type="submit" class="button button-inline") Save
 
     hr
+
+    div(class="block")
+        div 
+            |FediRedirect requires authorization to be able to use <a href="https://docs.joinmastodon.org/methods/search/">search</a>.
 
     script(type="module" src="widgets/mastodon/mastodon.js")

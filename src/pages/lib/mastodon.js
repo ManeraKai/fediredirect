@@ -1,5 +1,12 @@
 import utils from "./utils.js";
 
+const regex = {
+    userFederated: /\/@([A-Za-z0-9_]+)@([A-Za-z0-9_.]+)\/?$/,
+    userLocal: /\/@([A-Za-z0-9_]+)\/?$/,
+    postLocal: /\/@([A-Za-z0-9_]+)\/([0-9]+)\/?$/,
+    postFederated: /\/@(.*)@(.*)\/([0-9]+)\/?$/,
+}
+
 function isMastodon(url) {
     return new Promise(resolve => {
         const req = new XMLHttpRequest();
@@ -16,14 +23,15 @@ function isMastodon(url) {
 
 function mastodon_to_lemmy(url, options) {
     return new Promise(async resolve => {
-        const federatedRegex = url.pathname.match(/\/@([A-Za-z0-9_]+)@([A-Za-z0-9_]+)\/?$/)
-        if (federatedRegex) {
-            resolve(`${utils.protocolHost(options.lemmy.instance)}/u/${federatedRegex[1]}@${federatedRegex[2]}`)
+        console.log(url.pathname)
+        const userFederatedRegex = url.pathname.match(regex.userFederated)
+        if (userFederatedRegex) {
+            resolve(`${utils.protocolHost(options.lemmy.instance)}/u/${userFederatedRegex[1]}@${userFederatedRegex[2]}`)
             return
         }
-        const localRegex = url.pathname.match(/\/@([A-Za-z0-9_]+)\/?$/)
-        if (localRegex) {
-            resolve(`${utils.protocolHost(options.lemmy.instance)}/u/${localRegex[1]}@${url.hostname}`)
+        const userLocalRegex = url.pathname.match(regex.userLocal)
+        if (userLocalRegex) {
+            resolve(`${utils.protocolHost(options.lemmy.instance)}/u/${userLocalRegex[1]}@${url.hostname}`)
             return
         }
     })
@@ -31,8 +39,8 @@ function mastodon_to_lemmy(url, options) {
 
 function mastodon_to_mastodon(url, options) {
     return new Promise(async resolve => {
-        const localPostRegex = url.pathname.match(/\/@([A-Za-z0-9_]+)\/([0-9]+)\/?$/)
-        const federatedPostRegex = url.pathname.match(/\/@(.*)@(.*)\/([0-9]+)\/?$/)
+        const localPostRegex = url.pathname.match(regex.postLocal)
+        const federatedPostRegex = url.pathname.match(regex.postFederated)
         if (localPostRegex || federatedPostRegex) {
             const req = new XMLHttpRequest();
             req.open("GET", `${options.mastodon.instance}/api/v2/search?q=${encodeURIComponent(url.href)}&resolve=true&limit=1`, false);
@@ -50,12 +58,12 @@ function mastodon_to_mastodon(url, options) {
             return
         }
 
-        const userFederatedRegex = url.pathname.match(/\/@([A-Za-z0-9_]+)@([A-Za-z0-9_]+)\/?$/)
+        const userFederatedRegex = url.pathname.match(regex.userFederated)
         if (userFederatedRegex) {
             resolve(`${utils.protocolHost(options.mastodon.instance)}/@${userFederatedRegex[1]}@${userFederatedRegex[2]}`)
             return
         }
-        const userLocalRegex = url.pathname.match(/\/@([A-Za-z0-9_]+)\/?$/)
+        const userLocalRegex = url.pathname.match(regex.userLocal)
         if (userLocalRegex) {
             resolve(`${utils.protocolHost(options.mastodon.instance)}/@${userLocalRegex[1]}@${url.hostname}`)
             return
@@ -66,5 +74,6 @@ function mastodon_to_mastodon(url, options) {
 export default {
     isMastodon,
     mastodon_to_lemmy,
-    mastodon_to_mastodon
+    mastodon_to_mastodon,
+    regex
 }

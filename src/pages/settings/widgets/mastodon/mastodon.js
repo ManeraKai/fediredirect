@@ -11,6 +11,7 @@ let options
         instance.value = options.mastodon.instance
         code.value = options.mastodon.code
     }
+    checkInstance()
 
     let mastodon = options.mastodon ?? {}
     form.addEventListener("submit", async e => {
@@ -76,4 +77,3 @@ function checkInstance() {
 }
 
 instance.addEventListener("change", checkInstance)
-checkInstance()

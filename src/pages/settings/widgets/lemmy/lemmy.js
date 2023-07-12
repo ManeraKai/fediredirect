@@ -13,6 +13,8 @@ let options
         instance.value = options.lemmy.instance
         jwt.value = options.lemmy.auth
     }
+    checkInstance()
+    checkJwt()
 })()
 
 form.addEventListener("submit", async e => {
@@ -53,3 +55,32 @@ function getJwt(url, username, password) {
         req.send(JSON.stringify({ "username_or_email": username, "password": password }, null, 2))
     })
 }
+
+function checkInstance() {
+    try {
+        new URL(instance.value)
+        username.disabled = false
+        password.disabled = false
+        jwt.disabled = false
+    }
+    catch {
+        username.disabled = true
+        password.disabled = true
+        jwt.disabled = true
+    }
+}
+
+instance.addEventListener("change", checkInstance)
+
+function checkJwt() {
+    if (jwt.value != '') {
+        username.disabled = true
+        password.disabled = true
+    }
+    else {
+        username.disabled = false
+        password.disabled = false
+    }
+}
+
+jwt.addEventListener("change", checkJwt)

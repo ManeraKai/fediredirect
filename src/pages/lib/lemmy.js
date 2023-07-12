@@ -19,7 +19,8 @@ function isLemmy(url) {
                 else resolve(false)
             }
         }
-        req.send()
+        try { req.send() }
+        catch (error) { resolve(false) }
     })
 }
 
@@ -43,6 +44,11 @@ function resolveObject(q, type, options) {
         }
         req.send();
     })
+}
+
+function can_lemmy_to_lemmy(url, options) {
+    if (!options.lemmy) return 'credentials'
+    return true
 }
 
 function lemmy_to_lemmy(url, options) {
@@ -98,6 +104,14 @@ function lemmy_to_lemmy(url, options) {
     })
 }
 
+function can_lemmy_to_mastodon(url, options) {
+    if (!options.mastodon) return 'credentials'
+    for (const regexItem of [regex.userFederated, regex.userLocal, regex.communityFederated, regex.communityLocal]) {
+        if (url.pathname.match(regexItem)) return true
+    }
+    return false
+}
+
 function lemmy_to_mastodon(url, options) {
     return new Promise(async resolve => {
         const userFederatedRegex = url.pathname.match(regex.userFederated)
@@ -126,7 +140,11 @@ function lemmy_to_mastodon(url, options) {
 
 export default {
     isLemmy,
+    
+    can_lemmy_to_lemmy,
     lemmy_to_lemmy,
+    
+    can_lemmy_to_mastodon,
     lemmy_to_mastodon,
     regex
 }

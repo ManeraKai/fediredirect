@@ -26,6 +26,10 @@ body {
 	color: var(--text);
 }
 
+body * {
+	font-family: "Inter";
+}
+
 .title {
 	display: flex;
 	align-items: center;
@@ -155,6 +159,7 @@ div.block input[type="checkbox"] {
 }
 
 div.block h4 {
+	text-align: left;
 	margin: 0;
 	margin-right: 5px;
 	width: 80%;
@@ -207,16 +212,25 @@ div.buttons {
 }
 
 .button {
+	padding: 0;
+	margin: 0;
 	color: var(--text);
 	font-size: 16px;
-	font-weight: bold;
-	text-decoration: none;
-	cursor: pointer;
+	font-weight: normal;
 	transition-duration: 0.1s;
+	cursor: pointer;
+}
+
+.button:disabled {
+	color: var(--dark-grey);
+	cursor: auto
 }
 
 .button:hover {
 	color: var(--active);
+}
+.button:disabled:hover {
+	color: var(--dark-grey);
 }
 
 .button svg,
@@ -247,6 +261,11 @@ div.buttons-inline {
 
 .button:active {
 	transform: translateY(1px);
+}
+
+.button:disabled:active {
+	transform: none;
+
 }
 
 button.default {
@@ -295,7 +314,6 @@ button {
 	padding: 10px 5px;
 	text-decoration: none;
 	display: inline-block;
-	cursor: pointer;
 	border-radius: 5px;
 }
 

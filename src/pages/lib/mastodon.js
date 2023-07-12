@@ -17,8 +17,17 @@ function isMastodon(url) {
                 else resolve(false)
             }
         }
-        req.send()
+        try { req.send() }
+        catch (error) { resolve(false) }
     })
+}
+
+function can_mastodon_to_lemmy(url, options) {
+    if (!options.lemmy) return 'credentials'
+    for (const regexItem of [regex.userFederated, regex.userLocal]) {
+        if (url.pathname.match(regexItem)) return true
+    }
+    return false
 }
 
 function mastodon_to_lemmy(url, options) {
@@ -35,6 +44,11 @@ function mastodon_to_lemmy(url, options) {
             return
         }
     })
+}
+
+function can_mastodon_to_mastodon(url, options) {
+    if (!options.lemmy) return 'credentials'
+    return true
 }
 
 function mastodon_to_mastodon(url, options) {
@@ -73,7 +87,11 @@ function mastodon_to_mastodon(url, options) {
 
 export default {
     isMastodon,
+
+    can_mastodon_to_lemmy,
     mastodon_to_lemmy,
+
+    can_mastodon_to_mastodon,
     mastodon_to_mastodon,
     regex
 }

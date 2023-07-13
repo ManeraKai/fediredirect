@@ -110,8 +110,7 @@ function lemmy_to_lemmy(url, options) {
 }
 
 function can_lemmy_to_mastodon(url, options) {
-
-    for (const regexItem of [regex.userFederated, regex.userLocal, regex.communityFederated, regex.communityLocal]) {
+    for (const regexItem of [regex.userFederated, regex.userLocal, regex.communityFederated, regex.communityLocal, regex.post]) {
         if (url.pathname.match(regexItem)) {
             if (!options.mastodon) return 'credentials'
             return true
@@ -141,6 +140,21 @@ function lemmy_to_mastodon(url, options) {
         const communityLocalRegex = url.pathname.match(regex.communityLocal)
         if (communityLocalRegex) {
             resolve(`${utils.protocolHost(options.mastodon.instance)}/@${communityLocalRegex[1]}@${url.hostname}`)
+            return
+        }
+
+        const localPostRegex = url.pathname.match(regex.post)
+        if (localPostRegex) {
+            const req = new XMLHttpRequest();
+            req.open("GET", `${options.mastodon.instance}/api/v2/search?q=${encodeURIComponent(url.href)}&resolve=true&limit=1`, false);
+            req.setRequestHeader('Authorization', `Bearer ${options.mastodon.access_token}`)
+            req.onload = async () => {
+                const data = JSON.parse(req.responseText)['statuses'][0]
+                const post_id = data['id']
+                const username = data['account']['username']
+                resolve(`${utils.protocolHost(options.mastodon.instance)}/@${username}@${url.hostname}/${post_id}`)
+            }
+            req.send();
             return
         }
     })

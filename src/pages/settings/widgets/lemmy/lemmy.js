@@ -25,7 +25,7 @@ form.addEventListener("submit", async e => {
     } catch {
         return
     }
-    if (jwt.value == "") jwt.value = await getJwt(url, username.value, password.value)
+    if (jwt.value == "" && username.value != '' && password.value != '') jwt.value = await getJwt(url, username.value, password.value)
     if (jwt.value != "") {
         browser.storage.local.set(
             { lemmy: { instance: `${url.protocol}//${url.hostname}`, auth: jwt.value } },

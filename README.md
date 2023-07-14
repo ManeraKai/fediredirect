@@ -7,10 +7,9 @@ An extension that redirects you to your favorite instannce.
 </a>
 
 It currently supports:
-- [Lemmy](https://join-lemmy.org) => [Lemmy](https://join-lemmy.org)
-- [Mastodon](https://joinmastodon.org) => [Mastodon](https://joinmastodon.org)
-- [Mastodon](https://joinmastodon.org) => [Lemmy](https://join-lemmy.org/)
-- [Lemmy](https://join-lemmy.org/) => [Mastodon](https://joinmastodon.org)
+- [Mastodon](https://joinmastodon.org)
+- [Soapbox](https://soapbox.pub)
+- [Lemmy](https://join-lemmy.org)
 
 
 ## Demo:

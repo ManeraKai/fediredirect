@@ -23,8 +23,8 @@ function getOptions() {
 }
 
 function isMyInstance(url, software) {
-    const instance = new URL(options[software].instance)
-    return url.hostname == instance.hostname
+	const instance = new URL(options[software].instance)
+	return url.hostname == instance.hostname
 }
 
 function getBlacklist(options) {

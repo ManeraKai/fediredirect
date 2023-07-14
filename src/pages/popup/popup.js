@@ -1,4 +1,5 @@
 import utils from '../../pages/lib/utils.js'
+import redirector from '../../pages/lib/redirector.js'
 import lemmy from '../../pages/lib/lemmy.js'
 import mastodon from '../lib/mastodon.js'
 import soapbox from '../lib/soapbox.js'
@@ -9,11 +10,11 @@ let options
     browser.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         let url = new URL(tabs[0].url);
         if (await lemmy.isLemmy(url)) {
-            switch (lemmy.can_lemmy_to_lemmy(url, options)) {
+            switch (redirector.can_lemmy_to_lemmy(url, options)) {
                 case true:
                     document.getElementById("redirect_to_lemmy").disabled = false
                     document.getElementById("redirect_to_lemmy").addEventListener("click", async () => {
-                        const newUrl = await lemmy.lemmy_to_lemmy(url, options)
+                        const newUrl = await redirector.lemmy_to_lemmy(url, options)
                         if (newUrl) {
                             browser.tabs.update({ url: newUrl })
                             close()
@@ -29,12 +30,12 @@ let options
                 default:
                     document.getElementById("redirect_to_lemmy").title = 'URL not supported'
             }
-            switch (lemmy.can_lemmy_to_mastodon(url, options)) {
+            switch (redirector.can_lemmy_to_mastodon(url, options)) {
                 case true:
                     document.getElementById("redirect_to_mastodon").disabled = false
                     document.getElementById("redirect_to_mastodon").title = ''
                     document.getElementById("redirect_to_mastodon").addEventListener("click", async () => {
-                        const newUrl = await lemmy.lemmy_to_mastodon(url, options)
+                        const newUrl = await redirector.lemmy_to_mastodon(url, options)
                         if (newUrl) {
                             browser.tabs.update({ url: newUrl })
                             close()
@@ -50,12 +51,12 @@ let options
                 default:
                     document.getElementById("redirect_to_mastodon").title = 'Url not supported'
             }
-            switch (lemmy.can_lemmy_to_soapbox(url, options)) {
+            switch (redirector.can_lemmy_to_soapbox(url, options)) {
                 case true:
                     document.getElementById("redirect_to_soapbox").disabled = false
                     document.getElementById("redirect_to_soapbox").title = ''
                     document.getElementById("redirect_to_soapbox").addEventListener("click", async () => {
-                        const newUrl = await lemmy.lemmy_to_soapbox(url, options)
+                        const newUrl = await redirector.lemmy_to_soapbox(url, options)
                         if (newUrl) browser.tabs.update({ url: newUrl })
                     })
                     break
@@ -70,12 +71,12 @@ let options
             }
         }
         if (await mastodon.isMastodon(url)) {
-            switch (mastodon.can_mastodon_to_lemmy(url, options)) {
+            switch (redirector.can_mastodon_to_lemmy(url, options)) {
                 case true:
                     document.getElementById("redirect_to_lemmy").disabled = false
                     document.getElementById("redirect_to_mastodon").title = ''
                     document.getElementById("redirect_to_lemmy").addEventListener("click", async () => {
-                        const newUrl = await mastodon.mastodon_to_lemmy(url, options)
+                        const newUrl = await redirector.mastodon_to_lemmy(url, options)
                         if (newUrl) browser.tabs.update({ url: newUrl })
                     })
                     break
@@ -88,12 +89,12 @@ let options
                 default:
                     document.getElementById("redirect_to_mastodon").title = 'Url not supported'
             }
-            switch (mastodon.can_mastodon_to_mastodon(url, options)) {
+            switch (redirector.can_mastodon_to_mastodon(url, options)) {
                 case true:
                     document.getElementById("redirect_to_mastodon").disabled = false
                     document.getElementById("redirect_to_mastodon").title = ''
                     document.getElementById("redirect_to_mastodon").addEventListener("click", async () => {
-                        const newUrl = await mastodon.mastodon_to_mastodon(url, options)
+                        const newUrl = await redirector.mastodon_to_mastodon(url, options)
                         if (newUrl) browser.tabs.update({ url: newUrl })
                     })
                     break
@@ -106,12 +107,12 @@ let options
                 default:
                     document.getElementById("redirect_to_mastodon").title = 'Url not supported'
             }
-            switch (mastodon.can_mastodon_to_soapbox(url, options)) {
+            switch (redirector.can_mastodon_to_soapbox(url, options)) {
                 case true:
                     document.getElementById("redirect_to_soapbox").disabled = false
                     document.getElementById("redirect_to_soapbox").title = ''
                     document.getElementById("redirect_to_soapbox").addEventListener("click", async () => {
-                        const newUrl = await mastodon.mastodon_to_soapbox(url, options)
+                        const newUrl = await redirector.mastodon_to_soapbox(url, options)
                         if (newUrl) browser.tabs.update({ url: newUrl })
                     })
                     break
@@ -125,14 +126,13 @@ let options
                     document.getElementById("redirect_to_soapbox").title = 'Url not supported'
             }
         }
-
         if (await soapbox.isSoapbox(url)) {
-            switch (soapbox.can_soapbox_to_lemmy(url, options)) {
+            switch (redirector.can_soapbox_to_lemmy(url, options)) {
                 case true:
                     document.getElementById("redirect_to_lemmy").disabled = false
                     document.getElementById("redirect_to_mastodon").title = ''
                     document.getElementById("redirect_to_lemmy").addEventListener("click", async () => {
-                        const newUrl = await soapbox.soapbox_to_lemmy(url, options)
+                        const newUrl = await redirector.soapbox_to_lemmy(url, options)
                         if (newUrl) browser.tabs.update({ url: newUrl })
                     })
                     break
@@ -145,12 +145,12 @@ let options
                 default:
                     document.getElementById("redirect_to_soapbox").title = 'Url not supported'
             }
-            switch (soapbox.can_soapbox_to_soapbox(url, options)) {
+            switch (redirector.can_soapbox_to_soapbox(url, options)) {
                 case true:
                     document.getElementById("redirect_to_soapbox").disabled = false
                     document.getElementById("redirect_to_mastodon").title = ''
                     document.getElementById("redirect_to_soapbox").addEventListener("click", async () => {
-                        const newUrl = await soapbox.soapbox_to_soapbox(url, options)
+                        const newUrl = await redirector.soapbox_to_soapbox(url, options)
                         if (newUrl) browser.tabs.update({ url: newUrl })
                     })
                     break
@@ -164,12 +164,12 @@ let options
                     document.getElementById("redirect_to_soapbox").title = 'Url not supported'
             }
 
-            switch (soapbox.can_soapbox_to_mastodon(url, options)) {
+            switch (redirector.can_soapbox_to_mastodon(url, options)) {
                 case true:
                     document.getElementById("redirect_to_mastodon").disabled = false
                     document.getElementById("redirect_to_mastodon").title = ''
                     document.getElementById("redirect_to_mastodon").addEventListener("click", async () => {
-                        const newUrl = await soapbox.soapbox_to_mastodon(url, options)
+                        const newUrl = await redirector.soapbox_to_mastodon(url, options)
                         if (newUrl) browser.tabs.update({ url: newUrl })
                     })
                     break

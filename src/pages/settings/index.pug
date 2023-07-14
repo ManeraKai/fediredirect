@@ -23,6 +23,11 @@ html(id="elementToShowWithJavaScript" lang="en")
                 a(href="#mastodon")
                     img(src="/assets/mastodon.webp")
                     span Mastodon
+
+            div(class="title")
+                a(href="#soapbox")
+                    img(src="/assets/soapbox.svg")
+                    span Soapbox
             
             div(class="title")
                 a(target="_blank" href="https://github.com/ManeraKai/fediredirect")
@@ -33,4 +38,5 @@ html(id="elementToShowWithJavaScript" lang="en")
             include /src/pages/settings/widgets/general
             include /src/pages/settings/widgets/lemmy/lemmy
             include /src/pages/settings/widgets/mastodon/mastodon
+            include /src/pages/settings/widgets/soapbox/soapbox
     script(type="module" src="./index.js")

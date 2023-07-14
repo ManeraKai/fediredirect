@@ -155,8 +155,8 @@ function lemmy_to_mastodon(url, options) {
             return
         }
 
-        const localPostRegex = url.pathname.match(regex.post)
-        if (localPostRegex) {
+        const postRegex = url.pathname.match(regex.post)
+        if (postRegex) {
             const req = new XMLHttpRequest();
             req.open("GET", `${options.mastodon.instance}/api/v2/search?q=${encodeURIComponent(url.href)}&resolve=true&limit=1`, false);
             req.setRequestHeader('Authorization', `Bearer ${options.mastodon.access_token}`)
@@ -172,6 +172,53 @@ function lemmy_to_mastodon(url, options) {
     })
 }
 
+
+function can_lemmy_to_soapbox(url, options) {
+    for (const regexItem of [regex.userFederated, regex.userLocal, regex.post]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.mastodon || !options.mastodon.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [regex.post]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.mastodon || !options.mastodon.instance || !options.mastodon.access_token) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+function lemmy_to_soapbox(url, options) {
+    return new Promise(async resolve => {
+        const userFederatedRegex = url.pathname.match(regex.userFederated)
+        if (userFederatedRegex) {
+            resolve(`${utils.protocolHost(options.soapbox.instance)}/@${userFederatedRegex[1]}@${userFederatedRegex[2]}`)
+            return
+        }
+        const userLocalRegex = url.pathname.match(regex.userLocal)
+        if (userLocalRegex) {
+            resolve(`${utils.protocolHost(options.soapbox.instance)}/@${userLocalRegex[1]}@${url.hostname}`)
+            return
+        }
+
+        const postRegex = url.pathname.match(regex.post)
+        if (postRegex) {
+            const req = new XMLHttpRequest();
+            req.open("GET", `${options.soapbox.instance}/api/v2/search?q=${encodeURIComponent(url.href)}&resolve=true&limit=1`, false);
+            req.setRequestHeader('Authorization', `Bearer ${options.soapbox.access_token}`)
+            req.onload = async () => {
+                const data = JSON.parse(req.responseText)['statuses'][0]
+                const post_id = data['id']
+                const username = data['account']['username']
+                resolve(`${utils.protocolHost(options.soapbox.instance)}/@${username}@${url.hostname}/posts/${post_id}`)
+            }
+            req.send();
+            return
+        }
+    })
+}
+
 export default {
     isLemmy,
 
@@ -180,5 +227,9 @@ export default {
 
     can_lemmy_to_mastodon,
     lemmy_to_mastodon,
+
+    can_lemmy_to_soapbox,
+    lemmy_to_soapbox,
+
     regex
 }

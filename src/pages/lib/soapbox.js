@@ -3,11 +3,11 @@ import utils from "./utils.js";
 const regex = {
     userFederated: /\/@([A-Za-z0-9_]+)@([A-Za-z0-9_.]+)\/?$/,
     userLocal: /\/@([A-Za-z0-9_]+)\/?$/,
-    postLocal: /\/@([A-Za-z0-9_]+)\/([0-9]+)\/?$/,
-    postFederated: /\/@(.*)@(.*)\/([0-9]+)\/?$/,
+    postLocal: /\/@([A-Za-z0-9_]+)\/posts\/([a-zA-Z0-9]+)\/?$/,
+    postFederated: /\/@(.*)@(.*)\/posts\/([a-zA-Z0-9]+)\/?$/,
 }
 
-function isMastodon(url) {
+function isSoapbox(url) {
     return new Promise(resolve => {
         const req = new XMLHttpRequest();
         req.open("GET", `${url.protocol}//${url.hostname}/api/v1/instance`, false);
@@ -15,8 +15,12 @@ function isMastodon(url) {
             if (req.readyState == 4) {
                 if (req.status == 200) {
                     const data = JSON.parse(req.responseText)
-                    if (!data.version.includes("Soapbox")) {
-                        resolve(true)
+                    if (data.version.includes("Pleroma")) {
+                        for (const regexItem of Object.values(regex)) {
+                            if (url.pathname.match(regexItem)) {
+                                resolve(true)
+                            }
+                        }
                         return
                     }
                 }
@@ -28,7 +32,7 @@ function isMastodon(url) {
     })
 }
 
-function can_mastodon_to_lemmy(url, options) {
+function can_soapbox_to_lemmy(url, options) {
     for (const regexItem of [regex.userFederated, regex.userLocal]) {
         if (url.pathname.match(regexItem)) {
             if (!options.lemmy || !options.lemmy.instance) return 'instance'
@@ -38,9 +42,8 @@ function can_mastodon_to_lemmy(url, options) {
     return false
 }
 
-function mastodon_to_lemmy(url, options) {
+function soapbox_to_lemmy(url, options) {
     return new Promise(async resolve => {
-        console.log(url.pathname)
         const userFederatedRegex = url.pathname.match(regex.userFederated)
         if (userFederatedRegex) {
             resolve(`${utils.protocolHost(options.lemmy.instance)}/u/${userFederatedRegex[1]}@${userFederatedRegex[2]}`)
@@ -54,79 +57,21 @@ function mastodon_to_lemmy(url, options) {
     })
 }
 
-function can_mastodon_to_mastodon(url, options) {
+function can_soapbox_to_soapbox(url, options) {
     for (const regexItem of [regex.userFederated, regex.userLocal]) {
         if (url.pathname.match(regexItem)) {
-            if (!options.mastodon || !options.mastodon.instance || !options.mastodon.access_token) return 'credentials'
+            if (!options.soapbox || !options.soapbox.instance) return 'instance'
             return true
         }
     }
-    for (const regexItem of [regex.postLocal, regex.postFederated, regex.userFederated, regex.userLocal]) {
+    for (const regexItem of [regex.postLocal, regex.postFederated]) {
         if (url.pathname.match(regexItem)) {
-            if (!options.mastodon || !options.mastodon.instance) return 'instance'
+            if (!options.soapbox || !options.soapbox.instance || !options.soapbox.access_token) return 'credentials'
             return true
         }
     }
     return false
 }
-
-function mastodon_to_mastodon(url, options) {
-    return new Promise(async resolve => {
-        const localPostRegex = url.pathname.match(regex.postLocal)
-        const federatedPostRegex = url.pathname.match(regex.postFederated)
-        if (localPostRegex || federatedPostRegex) {
-            let q
-            if (localPostRegex) {
-                q = url.href
-            } else if (federatedPostRegex) {
-                q = await get_original_url(url, federatedPostRegex[3])
-            }
-            const req = new XMLHttpRequest();
-            req.open("GET", `${options.mastodon.instance}/api/v2/search?q=${encodeURIComponent(q)}&resolve=true&limit=1`, false);
-            req.setRequestHeader('Authorization', `Bearer ${options.mastodon.access_token}`)
-            req.onload = async () => {
-                const post_id = JSON.parse(req.responseText)['statuses'][0]['id']
-                if (localPostRegex) {
-                    resolve(`${utils.protocolHost(options.mastodon.instance)}/@${localPostRegex[1]}@${url.hostname}/${post_id}`)
-                }
-                else if (federatedPostRegex) {
-                    resolve(`${utils.protocolHost(options.mastodon.instance)}/@${federatedPostRegex[1]}@${federatedPostRegex[2]}/${post_id}`)
-                }
-            }
-            req.send();
-            return
-        }
-
-        const userFederatedRegex = url.pathname.match(regex.userFederated)
-        if (userFederatedRegex) {
-            resolve(`${utils.protocolHost(options.mastodon.instance)}/@${userFederatedRegex[1]}@${userFederatedRegex[2]}`)
-            return
-        }
-        const userLocalRegex = url.pathname.match(regex.userLocal)
-        if (userLocalRegex) {
-            resolve(`${utils.protocolHost(options.mastodon.instance)}/@${userLocalRegex[1]}@${url.hostname}`)
-            return
-        }
-    })
-}
-
-
-function can_mastodon_to_soapbox(url, options) {
-    for (const regexItem of [regex.userFederated, regex.userLocal]) {
-        if (url.pathname.match(regexItem)) {
-            if (!options.mastodon || !options.mastodon.instance || !options.mastodon.access_token) return 'credentials'
-            return true
-        }
-    }
-    for (const regexItem of [regex.postLocal, regex.postFederated, regex.userFederated, regex.userLocal]) {
-        if (url.pathname.match(regexItem)) {
-            if (!options.mastodon || !options.mastodon.instance) return 'instance'
-            return true
-        }
-    }
-    return false
-}
-
 
 function get_original_url(url, old_post_id) {
     return new Promise(resolve => {
@@ -140,7 +85,7 @@ function get_original_url(url, old_post_id) {
     })
 }
 
-function mastodon_to_soapbox(url, options) {
+function soapbox_to_soapbox(url, options) {
     return new Promise(async resolve => {
         const localPostRegex = url.pathname.match(regex.postLocal)
         const federatedPostRegex = url.pathname.match(regex.postFederated)
@@ -169,6 +114,64 @@ function mastodon_to_soapbox(url, options) {
 
         const userFederatedRegex = url.pathname.match(regex.userFederated)
         if (userFederatedRegex) {
+            resolve(`${utils.protocolHost(options.soapbox.instance)}/@${userFederatedRegex[1]}@${userFederatedRegex[2]}`)
+            return
+        }
+        const userLocalRegex = url.pathname.match(regex.userLocal)
+        if (userLocalRegex) {
+            resolve(`${utils.protocolHost(options.soapbox.instance)}/@${userLocalRegex[1]}@${url.hostname}`)
+            return
+        }
+    })
+}
+
+function can_soapbox_to_mastodon(url, options) {
+    for (const regexItem of [regex.userFederated, regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.soapbox || !options.soapbox.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [regex.postLocal, regex.postFederated]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.soapbox || !options.soapbox.instance || !options.soapbox.access_token) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+
+function soapbox_to_mastodon(url, options) {
+    return new Promise(async resolve => {
+        const localPostRegex = url.pathname.match(regex.postLocal)
+        const federatedPostRegex = url.pathname.match(regex.postFederated)
+        if (localPostRegex || federatedPostRegex) {
+            let q
+            if (localPostRegex) {
+                q = url.href
+            } else if (federatedPostRegex) {
+                q = await get_original_url(url, federatedPostRegex[3])
+            }
+            const req = new XMLHttpRequest();
+            req.open("GET", `${options.mastodon.instance}/api/v2/search?q=${encodeURIComponent(q)}&resolve=true&limit=1`, false);
+            req.setRequestHeader('Authorization', `Bearer ${options.mastodon.access_token}`)
+            req.onload = async () => {
+                const data = JSON.parse(req.responseText)['statuses'][0]
+                const post_id = data['id']
+                const username = data['account']['username']
+                if (localPostRegex) {
+                    resolve(`${utils.protocolHost(options.mastodon.instance)}/@${username}@${url.hostname}/${post_id}`)
+                } else if (federatedPostRegex) {
+                    resolve(`${utils.protocolHost(options.mastodon.instance)}/@${username}@${federatedPostRegex[2]}/${post_id}`)
+                }
+            }
+            req.send()
+            return
+        }
+
+        const userFederatedRegex = url.pathname.match(regex.userFederated)
+        if (userFederatedRegex) {
             resolve(`${utils.protocolHost(options.mastodon.instance)}/@${userFederatedRegex[1]}@${userFederatedRegex[2]}`)
             return
         }
@@ -180,18 +183,17 @@ function mastodon_to_soapbox(url, options) {
     })
 }
 
-
 export default {
-    isMastodon,
+    isSoapbox,
 
-    can_mastodon_to_lemmy,
-    mastodon_to_lemmy,
+    can_soapbox_to_lemmy,
+    soapbox_to_lemmy,
 
-    can_mastodon_to_mastodon,
-    mastodon_to_mastodon,
+    can_soapbox_to_soapbox,
+    soapbox_to_soapbox,
 
-    can_mastodon_to_soapbox,
-    mastodon_to_soapbox,
+    can_soapbox_to_mastodon,
+    soapbox_to_mastodon,
 
     regex
 }

@@ -40,7 +40,7 @@ body * {
 }
 
 .title:hover {
-	opacity: 1 !important;
+	opacity: 1
 }
 
 .title:hover a {
@@ -222,15 +222,18 @@ div.buttons {
 }
 
 .button:disabled {
-	color: var(--dark-grey);
+	color: var(--text);
+	opacity: .5;
 	cursor: auto
 }
 
 .button:hover {
 	color: var(--active);
 }
+
 .button:disabled:hover {
-	color: var(--dark-grey);
+	color: var(--text);
+	opacity: .5;
 }
 
 .button svg,

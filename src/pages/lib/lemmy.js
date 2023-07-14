@@ -47,9 +47,15 @@ function resolveObject(q, type, options) {
 }
 
 function can_lemmy_to_lemmy(url, options) {
-    for (const regexItem of [regex.post, regex.comment, regex.communityFederated, regex.communityLocal, regex.userFederated, regex.userLocal]) {
+    for (const regexItem of [regex.communityFederated, regex.communityLocal, regex.userFederated, regex.userLocal]) {
         if (url.pathname.match(regexItem)) {
-            if (!options.lemmy) return 'credentials'
+            if (!options.lemmy || !options.lemmy.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [regex.post, regex.comment]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.lemmy || !options.lemmy.instance || !options.lemmy.jwt) return 'credentials'
             return true
         }
     }
@@ -112,7 +118,13 @@ function lemmy_to_lemmy(url, options) {
 function can_lemmy_to_mastodon(url, options) {
     for (const regexItem of [regex.userFederated, regex.userLocal, regex.communityFederated, regex.communityLocal, regex.post]) {
         if (url.pathname.match(regexItem)) {
-            if (!options.mastodon) return 'credentials'
+            if (!options.mastodon || !options.mastodon.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [regex.post]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.mastodon || !options.mastodon.instance || !options.mastodon.access_token) return 'credentials'
             return true
         }
     }

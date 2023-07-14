@@ -141,7 +141,6 @@ function can_soapbox_to_mastodon(url, options) {
     return false
 }
 
-
 function soapbox_to_mastodon(url, options) {
     return new Promise(async resolve => {
         const localPostRegex = url.pathname.match(regex.postLocal)

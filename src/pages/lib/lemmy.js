@@ -62,6 +62,18 @@ function can_lemmy_to_lemmy(url, options) {
     return false
 }
 
+function lemmy_get_original_post(url, old_post_id) {
+    return new Promise(resolve => {
+        const req = new XMLHttpRequest();
+        req.open("GET", `${url.protocol}//${url.hostname}/api/v3/post?id=${old_post_id}`, false);
+        req.onload = async () => {
+            const ap_id = JSON.parse(req.responseText)['post_view']['post']['ap_id']
+            resolve(ap_id)
+        }
+        req.send()
+    })
+}
+
 function lemmy_to_lemmy(url, options) {
     return new Promise(async resolve => {
         const postRegex = url.pathname.match(regex.post)
@@ -109,7 +121,7 @@ function lemmy_to_lemmy(url, options) {
 
         const userLocalRegex = url.pathname.match(regex.userLocal)
         if (userLocalRegex) {
-            resolve(`${utils.protocolHost(options.lemmy.instance)}/u/${userRegex[1]}@${url.hostname}`)
+            resolve(`${utils.protocolHost(options.lemmy.instance)}/u/${userLocalRegex[1]}@${url.hostname}`)
             return
         }
     })
@@ -157,8 +169,9 @@ function lemmy_to_mastodon(url, options) {
 
         const postRegex = url.pathname.match(regex.post)
         if (postRegex) {
+            const q = await lemmy_get_original_post(url, postRegex[1])
             const req = new XMLHttpRequest();
-            req.open("GET", `${options.mastodon.instance}/api/v2/search?q=${encodeURIComponent(url.href)}&resolve=true&limit=1`, false);
+            req.open("GET", `${options.mastodon.instance}/api/v2/search?q=${encodeURIComponent(q)}&resolve=true&limit=1`, false);
             req.setRequestHeader('Authorization', `Bearer ${options.mastodon.access_token}`)
             req.onload = async () => {
                 const data = JSON.parse(req.responseText)['statuses'][0]
@@ -171,7 +184,6 @@ function lemmy_to_mastodon(url, options) {
         }
     })
 }
-
 
 function can_lemmy_to_soapbox(url, options) {
     for (const regexItem of [regex.userFederated, regex.userLocal, regex.post]) {
@@ -204,8 +216,9 @@ function lemmy_to_soapbox(url, options) {
 
         const postRegex = url.pathname.match(regex.post)
         if (postRegex) {
+            const q = await lemmy_get_original_post(url, postRegex[1])
             const req = new XMLHttpRequest();
-            req.open("GET", `${options.soapbox.instance}/api/v2/search?q=${encodeURIComponent(url.href)}&resolve=true&limit=1`, false);
+            req.open("GET", `${options.soapbox.instance}/api/v2/search?q=${encodeURIComponent(q)}&resolve=true&limit=1`, false);
             req.setRequestHeader('Authorization', `Bearer ${options.soapbox.access_token}`)
             req.onload = async () => {
                 const data = JSON.parse(req.responseText)['statuses'][0]

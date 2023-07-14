@@ -14,7 +14,10 @@ let options
                     document.getElementById("redirect_to_lemmy").disabled = false
                     document.getElementById("redirect_to_lemmy").addEventListener("click", async () => {
                         const newUrl = await lemmy.lemmy_to_lemmy(url, options)
-                        if (newUrl) browser.tabs.update({ url: newUrl })
+                        if (newUrl) {
+                            browser.tabs.update({ url: newUrl })
+                            close()
+                        }
                     })
                     break
                 case 'credentials':
@@ -32,7 +35,10 @@ let options
                     document.getElementById("redirect_to_mastodon").title = ''
                     document.getElementById("redirect_to_mastodon").addEventListener("click", async () => {
                         const newUrl = await lemmy.lemmy_to_mastodon(url, options)
-                        if (newUrl) browser.tabs.update({ url: newUrl })
+                        if (newUrl) {
+                            browser.tabs.update({ url: newUrl })
+                            close()
+                        }
                     })
                     break
                 case 'credentials':
@@ -119,7 +125,7 @@ let options
                     document.getElementById("redirect_to_soapbox").title = 'Url not supported'
             }
         }
-        
+
         if (await soapbox.isSoapbox(url)) {
             switch (soapbox.can_soapbox_to_lemmy(url, options)) {
                 case true:
@@ -157,7 +163,7 @@ let options
                 default:
                     document.getElementById("redirect_to_soapbox").title = 'Url not supported'
             }
-            
+
             switch (soapbox.can_soapbox_to_mastodon(url, options)) {
                 case true:
                     document.getElementById("redirect_to_mastodon").disabled = false

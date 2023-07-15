@@ -1,0 +1,21 @@
+section(class="option-block" id="calckey_page")
+    h1 Calckey
+    hr
+
+    form(id="calckey_form")
+        div(class="block option-input")
+            div 
+                h4 Your instance
+                input(class="custom-instance instance" type="url")
+
+
+        div(class="block")
+            button(type="submit" class="button button-inline") Save
+
+    hr
+
+    div(class="block")
+        div 
+            |FediRedirect requires authorization to be able to use <a href="https://docs.joinmastodon.org/methods/search/">search</a>.
+
+    script(type="module" src="widgets/calckey/calckey.js")

@@ -28,6 +28,11 @@ html(id="elementToShowWithJavaScript" lang="en")
                 a(href="#soapbox")
                     img(src="/assets/soapbox.svg")
                     span Soapbox
+
+            div(class="title")
+                a(href="#calckey")
+                    img(src="/assets/calckey.svg")
+                    span Calckey
             
             div(class="title")
                 a(target="_blank" href="https://github.com/ManeraKai/fediredirect")
@@ -39,4 +44,5 @@ html(id="elementToShowWithJavaScript" lang="en")
             include /src/pages/settings/widgets/lemmy/lemmy
             include /src/pages/settings/widgets/mastodon/mastodon
             include /src/pages/settings/widgets/soapbox/soapbox
+            include /src/pages/settings/widgets/calckey/calckey
     script(type="module" src="./index.js")

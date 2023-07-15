@@ -1,6 +1,6 @@
 # FediRedirect
 
-An extension that redirects you to your favorite instannce.
+A browser extension that redirects you from a fediverse instance to your favorite instance
 
 <a href="https://addons.mozilla.org/firefox/addon/fediredirect/">
     <img src ="assets/badge-amo.png" height=60 >
@@ -10,7 +10,7 @@ It currently supports:
 - [Mastodon](https://joinmastodon.org)
 - [Soapbox](https://soapbox.pub)
 - [Lemmy](https://join-lemmy.org)
-
+- [Calckey](https://calckey.org/)
 
 ## Demo:
 

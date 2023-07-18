@@ -12,11 +12,19 @@ const regex = {
 function isLemmy(url) {
     return new Promise(resolve => {
         const req = new XMLHttpRequest();
-        req.open("GET", `${url.protocol}//${url.hostname}/api/v3/community/list`, true);
+        req.open("GET", `${url.protocol}//${url.hostname}/api/v3/site`, true);
         req.onreadystatechange = () => {
             if (req.readyState == 4) {
-                if (req.status == 200) resolve(true)
-                else resolve(false)
+                if (req.status == 200) {
+                    try {
+                        const data = JSON.parse(req.responseText)
+                        if (data.serverVersion) {
+                            resolve(true)
+                            return
+                        }
+                    } catch { }
+                }
+                resolve(false)
             }
         }
         try { req.send() }

@@ -10,7 +10,8 @@ It currently supports:
 - [Mastodon](https://joinmastodon.org)
 - [Soapbox](https://soapbox.pub)
 - [Lemmy](https://join-lemmy.org)
-- [Calckey](https://calckey.org/)
+- [Calckey](https://calckey.org)
+- [Peertube](https://joinpeertube.org)
 
 ## Demo:
 

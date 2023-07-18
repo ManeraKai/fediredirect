@@ -1,0 +1,14 @@
+section(class="option-block" id="peertube_page")
+    h1 Peertube
+    hr
+
+    form(id="peertube_form")
+        div(class="block option-input")
+            div 
+                h4 Your instance
+                input(class="custom-instance instance" type="url")
+
+        div(class="block")
+            button(type="submit" class="button button-inline") Save
+
+    script(type="module" src="widgets/peertube/peertube.js")

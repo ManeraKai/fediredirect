@@ -63,7 +63,11 @@ function get_post(url) {
             const req = new XMLHttpRequest();
             req.open("GET", `${url.protocol}//${url.hostname}/api/v3/post?id=${postRegex[1]}`, false);
             req.onload = async () => {
-                resolve(JSON.parse(req.responseText)['post_view']['post']['id'])
+                if (req.status == 200) {
+                    resolve(JSON.parse(req.responseText)['post_view']['post']['ap_id'])
+                    return
+                }
+                resolve()
             }
             req.send()
         } else {
@@ -96,7 +100,11 @@ function get_comment(url) {
             const req = new XMLHttpRequest();
             req.open("GET", `${url.protocol}//${url.hostname}/api/v3/comment?id=${commentRegex[1]}`, false);
             req.onload = async () => {
-                resolve(JSON.parse(req.responseText)['comment_view']['comment']['id'])
+                if (req.status == 200) {
+                    resolve(JSON.parse(req.responseText)['comment_view']['comment']['ap_id'])
+                    return
+                }
+                resolve()
             }
             req.send()
         } else {

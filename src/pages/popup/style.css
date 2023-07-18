@@ -24,3 +24,23 @@ div.block {
 div.block h4 {
 	min-width: 200px;
 }
+
+.loader {
+	border: 3px solid #00000000;
+	border-top: 3px solid #fbc117;
+	border-radius: 50%;
+	box-sizing: border-box;
+	width: 25px;
+	height: 25px;
+	animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}

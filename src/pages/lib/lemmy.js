@@ -18,7 +18,7 @@ function isLemmy(url) {
                 if (req.status == 200) {
                     try {
                         const data = JSON.parse(req.responseText)
-                        if (data.serverVersion) {
+                        if (data.version) {
                             resolve(true)
                             return
                         }
@@ -77,9 +77,13 @@ function redirect_post(post, options) {
         const req = new XMLHttpRequest();
         req.open("GET", `${utils.protocolHost(options.lemmy.instance)}/api/v3/resolve_object?q=${encodeURIComponent(post)}&auth=${encodeURIComponent(options.lemmy.auth)}`, false)
         req.onload = () => {
-            const id = JSON.parse(req.responseText)['post']['post']['id']
-            resolve(`${utils.protocolHost(options.lemmy.instance)}/post/${id}`)
-            return
+            if (req.status == 200) {
+                const data = JSON.parse(req.responseText)
+                const id = data['post']['post']['id']
+                resolve(`${utils.protocolHost(options.lemmy.instance)}/post/${id}`)
+                return
+            }
+            resolve()
         }
         req.send();
     })

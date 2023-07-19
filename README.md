@@ -12,3 +12,4 @@ It currently supports:
 - [Lemmy](https://join-lemmy.org)
 - [Calckey](https://calckey.org)
 - [Peertube](https://joinpeertube.org)
+- [Pleroma](https://pleroma.social)

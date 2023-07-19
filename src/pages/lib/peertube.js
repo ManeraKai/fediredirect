@@ -82,8 +82,11 @@ function redirect_video(video, options) {
         req.open("GET", `${options.peertube.instance}/api/v1/search/videos?search=${encodeURIComponent(video)}&count=1`, false);
         req.onload = async () => {
             const data = JSON.parse(req.responseText).data
-            const video_id = data.uuid
-            resolve(`${utils.protocolHost(options.peertube.instance)}/w/${video_id}`)
+            if (data.length > 0) {
+                const video_id = data[0].uuid
+                resolve(`${utils.protocolHost(options.peertube.instance)}/w/${video_id}`)
+            }
+            resolve()
         }
         req.send();
     })

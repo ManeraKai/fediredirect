@@ -39,7 +39,6 @@ function getJwt(url, username, password) {
         req.open("POST", `${url.protocol}//${url.hostname}/api/v3/user/login`);
         req.setRequestHeader('Content-Type', 'application/json')
         req.onreadystatechange = () => {
-            console.log(req)
             if (req.readyState == 4) {
                 if (req.status == 200) {
                     resolve(JSON.parse(req.responseText).jwt)

@@ -506,7 +506,7 @@ function calckey_to_lemmy(url, options) {
 
 // Peertube
 function can_peertube_to_peertube(url, options) {
-    for (const regexItem of [peertube.regex.channelFederated, peertube.regex.channelLocal, peertube.regex.userFederated, peertube.regex.userLocal]) {
+    for (const regexItem of [peertube.regex.channelFederated, peertube.regex.channelLocal, peertube.regex.userFederated, peertube.regex.userLocal, peertube.regex.video]) {
         if (url.pathname.match(regexItem)) {
             if (!options.peertube || !options.peertube.instance) return 'instance'
             return true
@@ -517,11 +517,11 @@ function can_peertube_to_peertube(url, options) {
 
 function peertube_to_peertube(url, options) {
     return new Promise(async resolve => {
-        // const video = await peertube.get_video(url)
-        // if (video) {
-        //     resolve(await peertube.redirect_video(video, options))
-        //     return
-        // }
+        const video = await peertube.get_video(url)
+        if (video) {
+            resolve(await peertube.redirect_video(video, options))
+            return
+        }
 
         const username = peertube.get_username(url)
         if (username) {

@@ -21,7 +21,6 @@ function isSoapbox(url) {
                                 resolve(true)
                             }
                         }
-                        return
                     }
                 }
                 resolve(false)

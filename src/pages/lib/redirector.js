@@ -3,6 +3,7 @@ import mastodon from './mastodon.js'
 import soapbox from './soapbox.js'
 import calckey from './calckey.js'
 import peertube from './peertube.js'
+import pleroma from './pleroma.js'
 
 // Mastodon
 function can_mastodon_to_mastodon(url, options) {
@@ -121,6 +122,39 @@ function mastodon_to_calckey(url, options) {
     })
 }
 
+function can_mastodon_to_pleroma(url, options) {
+    for (const regexItem of [mastodon.regex.userFederated, mastodon.regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [mastodon.regex.postLocal, mastodon.regex.postFederated]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+function mastodon_to_pleroma(url, options) {
+    return new Promise(async resolve => {
+        const post_comment = await mastodon.get_post_comment(url, options)
+        if (post_comment) {
+            resolve(await pleroma.redirect_post_comment(post_comment, options))
+            return
+        }
+
+        const username = mastodon.get_username(url)
+        if (username) {
+            resolve(pleroma.redirect_username(username, options))
+            return
+        }
+    })
+}
+
+
 // Soapbox
 function can_soapbox_to_soapbox(url, options) {
     for (const regexItem of [soapbox.regex.userFederated, soapbox.regex.userLocal]) {
@@ -238,6 +272,40 @@ function soapbox_to_calckey(url, options) {
         }
     })
 }
+
+
+function can_soapbox_to_pleroma(url, options) {
+    for (const regexItem of [soapbox.regex.userFederated, soapbox.regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [soapbox.regex.postLocal, soapbox.regex.postFederated]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+function soapbox_to_pleroma(url, options) {
+    return new Promise(async resolve => {
+        const post_comment = await soapbox.get_post_comment(url, options)
+        if (post_comment) {
+            resolve(await pleroma.redirect_post_comment(post_comment, options))
+            return
+        }
+
+        const username = soapbox.get_username(url)
+        if (username) {
+            resolve(pleroma.redirect_username(username, options))
+            return
+        }
+    })
+}
+
 
 // Lemmy
 function can_lemmy_to_lemmy(url, options) {
@@ -386,6 +454,44 @@ function lemmy_to_calckey(url, options) {
     })
 }
 
+function can_lemmy_to_pleroma(url, options) {
+    for (const regexItem of [lemmy.regex.userFederated, lemmy.regex.userLocal, lemmy.regex.communityFederated, lemmy.regex.communityLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [lemmy.regex.post]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+function lemmy_to_pleroma(url, options) {
+    return new Promise(async resolve => {
+        const username = lemmy.get_username(url)
+        if (username) {
+            resolve(pleroma.redirect_username(username, options))
+            return
+        }
+
+        const community = lemmy.get_community(url)
+        if (community) {
+            resolve(pleroma.redirect_username(community, options))
+            return
+        }
+
+        const post = await lemmy.get_post(url, options)
+        if (post) {
+            resolve(await pleroma.redirect_post_comment(post, options))
+            return
+        }
+    })
+}
+
 // Calckey
 function can_calckey_to_calckey(url, options) {
     for (const regexItem of [calckey.regex.userFederated, calckey.regex.userLocal]) {
@@ -499,6 +605,39 @@ function calckey_to_lemmy(url, options) {
         const username = calckey.get_username(url)
         if (username) {
             resolve(lemmy.redirect_username(username, options))
+            return
+        }
+    })
+}
+
+
+function can_calckey_to_pleroma(url, options) {
+    for (const regexItem of [calckey.regex.userFederated, calckey.regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [calckey.regex.postLocal, calckey.regex.postFederated]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+function calckey_to_pleroma(url, options) {
+    return new Promise(async resolve => {
+        const post_comment = await calckey.get_post_comment(url, options)
+        if (post_comment) {
+            resolve(await pleroma.redirect_post_comment(post_comment, options))
+            return
+        }
+
+        const username = calckey.get_username(url)
+        if (username) {
+            resolve(pleroma.redirect_username(username, options))
             return
         }
     })
@@ -653,6 +792,183 @@ function peertube_to_lemmy(url, options) {
     })
 }
 
+function can_peertube_to_pleroma(url, options) {
+    for (const regexItem of [peertube.regex.userFederated, peertube.regex.userLocal, peertube.regex.video]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'instance'
+            return true
+        }
+    }
+    return false
+}
+
+function peertube_to_pleroma(url, options) {
+    return new Promise(async resolve => {
+        const username = peertube.get_username(url)
+        if (username) {
+            resolve(pleroma.redirect_username(username, options))
+            return
+        }
+
+        const video = await peertube.get_video(url, options)
+        if (video) {
+            resolve(await pleroma.redirect_post_comment(video, options))
+            return
+        }
+    })
+}
+
+// Pleroma
+function can_pleroma_to_pleroma(url, options) {
+    for (const regexItem of [pleroma.regex.userFederated, pleroma.regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [pleroma.regex.post]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.pleroma || !options.pleroma.instance) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+function pleroma_to_pleroma(url, options) {
+    return new Promise(async resolve => {
+        const post_comment = await pleroma.get_post_comment(url, options)
+        if (post_comment) {
+            resolve(await pleroma.redirect_post_comment(post_comment, options))
+            return
+        }
+
+        const username = pleroma.get_username(url)
+        if (username) {
+            resolve(pleroma.redirect_username(username, options))
+            return
+        }
+    })
+}
+
+function can_pleroma_to_lemmy(url, options) {
+    for (const regexItem of [pleroma.regex.userFederated, pleroma.regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.lemmy || !options.lemmy.instance) return 'instance'
+            return true
+        }
+    }
+    return false
+}
+
+function pleroma_to_lemmy(url, options) {
+    return new Promise(async resolve => {
+        const username = pleroma.get_username(url)
+        if (username) {
+            resolve(lemmy.redirect_username(username, options))
+            return
+        }
+    })
+}
+
+function can_pleroma_to_mastodon(url, options) {
+    for (const regexItem of [pleroma.regex.userFederated, pleroma.regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.mastodon || !options.mastodon.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [pleroma.regex.post]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.mastodon || !options.mastodon.instance || !options.mastodon.access_token) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+function pleroma_to_mastodon(url, options) {
+    return new Promise(async resolve => {
+        const post_comment = await pleroma.get_post_comment(url, options)
+        if (post_comment) {
+            resolve(await mastodon.redirect_post_comment(post_comment, options))
+            return
+        }
+
+        const username = pleroma.get_username(url)
+        if (username) {
+            resolve(mastodon.redirect_username(username, options))
+            return
+        }
+    })
+}
+function can_pleroma_to_soapbox(url, options) {
+    for (const regexItem of [pleroma.regex.userFederated, pleroma.regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.soapbox || !options.soapbox.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [pleroma.regex.post]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.soapbox || !options.soapbox.instance || !options.soapbox.access_token) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+
+function pleroma_to_soapbox(url, options) {
+    return new Promise(async resolve => {
+        const post_comment = await pleroma.get_post_comment(url, options)
+        if (post_comment) {
+            resolve(await soapbox.redirect_post_comment(post_comment, options))
+            return
+        }
+
+        const username = pleroma.get_username(url)
+        if (username) {
+            resolve(soapbox.redirect_username(username, options))
+            return
+        }
+    })
+}
+
+
+
+function can_pleroma_to_calckey(url, options) {
+    for (const regexItem of [pleroma.regex.userFederated, pleroma.regex.userLocal]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.calckey || !options.calckey.instance) return 'instance'
+            return true
+        }
+    }
+    for (const regexItem of [pleroma.regex.post]) {
+        if (url.pathname.match(regexItem)) {
+            if (!options.calckey || !options.calckey.instance || !options.calckey.access_token) return 'credentials'
+            return true
+        }
+    }
+    return false
+}
+
+function pleroma_to_calckey(url, options) {
+    return new Promise(async resolve => {
+        const post_comment = await pleroma.get_post_comment(url, options)
+        if (post_comment) {
+            resolve(await calckey.redirect_post_comment(post_comment, options))
+            return
+        }
+
+        const username = pleroma.get_username(url)
+        if (username) {
+            resolve(calckey.redirect_username(username, options))
+            return
+        }
+    })
+}
+
 export default {
     can_soapbox_to_soapbox,
     soapbox_to_soapbox,
@@ -662,6 +978,8 @@ export default {
     soapbox_to_lemmy,
     can_soapbox_to_calckey,
     soapbox_to_calckey,
+    can_soapbox_to_pleroma,
+    soapbox_to_pleroma,
 
     can_mastodon_to_mastodon,
     mastodon_to_mastodon,
@@ -671,6 +989,8 @@ export default {
     mastodon_to_calckey,
     can_mastodon_to_lemmy,
     mastodon_to_lemmy,
+    can_mastodon_to_pleroma,
+    mastodon_to_pleroma,
 
     can_lemmy_to_lemmy,
     lemmy_to_lemmy,
@@ -680,6 +1000,8 @@ export default {
     lemmy_to_soapbox,
     can_lemmy_to_calckey,
     lemmy_to_calckey,
+    can_lemmy_to_pleroma,
+    lemmy_to_pleroma,
 
     can_calckey_to_calckey,
     calckey_to_calckey,
@@ -689,6 +1011,8 @@ export default {
     calckey_to_soapbox,
     can_calckey_to_lemmy,
     calckey_to_lemmy,
+    can_calckey_to_pleroma,
+    calckey_to_pleroma,
 
     can_peertube_to_peertube,
     peertube_to_peertube,
@@ -700,4 +1024,17 @@ export default {
     peertube_to_calckey,
     can_peertube_to_lemmy,
     peertube_to_lemmy,
+    can_peertube_to_pleroma,
+    peertube_to_pleroma,
+
+    can_pleroma_to_pleroma,
+    pleroma_to_pleroma,
+    can_pleroma_to_lemmy,
+    pleroma_to_lemmy,
+    can_pleroma_to_soapbox,
+    pleroma_to_soapbox,
+    can_pleroma_to_mastodon,
+    pleroma_to_mastodon,
+    can_pleroma_to_calckey,
+    pleroma_to_calckey,
 }

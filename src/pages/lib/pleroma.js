@@ -3,7 +3,7 @@ import utils from "./utils.js";
 const regex = {
     userFederated: /\/users\/$([A-Za-z0-9_]+)\/?$/,
     userLocal: /\/users\/([A-Za-z0-9_]+)\/?$/,
-    postLocal: /notice\/([a-zA-Z0-9]+)\/?$/,
+    post: /notice\/([a-zA-Z0-9]+)\/?$/,
 }
 
 function isPleroma(url) {
@@ -40,7 +40,7 @@ function get_username(url) {
 }
 
 function redirect_username(username, options) {
-    return `${utils.protocolHost(options.pleroma.instance)}/@${username}`
+    return `${utils.protocolHost(options.pleroma.instance)}/${username}`
 }
 
 function get_original_url(url, old_post_id) {
@@ -57,7 +57,7 @@ function get_original_url(url, old_post_id) {
 
 function get_post_comment(url) {
     return new Promise(async resolve => {
-        const localPostRegex = url.pathname.match(regex.postLocal)
+        const localPostRegex = url.pathname.match(regex.post)
         if (localPostRegex) {
             resolve(url.href)
             return
@@ -77,10 +77,11 @@ function redirect_post_comment(post_comment, options) {
         req.open("GET", `${options.pleroma.instance}/api/v2/search?q=${encodeURIComponent(post_comment)}&resolve=true&limit=1`, true);
         req.setRequestHeader('Authorization', `Bearer ${options.pleroma.access_token}`)
         req.onload = () => {
-            const data = JSON.parse(req.responseText)['statuses'][0]
-            const post_id = data['id']
-            const username = data['account']['acct']
-            resolve(`${utils.protocolHost(options.pleroma.instance)}/@${username}/posts/${post_id}`)
+            const data = JSON.parse(req.responseText)['statuses']
+            if (data.length > 0) {
+                const post_id = data[0].id
+                resolve(`${utils.protocolHost(options.pleroma.instance)}/notice/${post_id}`)
+            }
         }
         req.send()
     })

@@ -38,6 +38,11 @@ html(id="elementToShowWithJavaScript" lang="en")
                 a(href="#peertube")
                     img(src="/assets/peertube.svg")
                     span Peertube
+
+            div(class="title")
+                a(href="#pleroma")
+                    img(src="/assets/pleroma.webp")
+                    span Pleroma
             
             div(class="title")
                 a(target="_blank" href="https://github.com/ManeraKai/fediredirect")
@@ -51,4 +56,5 @@ html(id="elementToShowWithJavaScript" lang="en")
             include /src/pages/settings/widgets/soapbox/soapbox
             include /src/pages/settings/widgets/calckey/calckey
             include /src/pages/settings/widgets/peertube/peertube
+            include /src/pages/settings/widgets/pleroma/pleroma
     script(type="module" src="./index.js")
